@@ -1,65 +1,30 @@
-package hello.entity;
+package hello.web.request;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.util.Date;
+import hello.entity.User;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
- *Entity for {@link User}
+ *Entity for wiring with {@link User}
  */
-@Entity
-@Table(name = "users")
-public class User {
-
-    /**
-     * id for {@link User}
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
+public class UserRequest {
     /**
      * name for {@link User}
      */
-    @Column(unique = true)
+    @NotBlank
     private String name;
 
     /**
      * password for {@link User}
      */
+    @NotBlank
     private String password;
 
     /**
      * age for {@link User}
      */
-    private int age;
-
-    /**
-     * date when {@link User} was created
-     */
-    @Column(updatable = false)
-    private Date creationDate = new Date();
-
-
-    /**
-     * @return {@link User}'s id
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * set {@link User}'s id
-     * @param id id for {@link User}
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private Integer age;
 
     /**
      * @return {@link User}'s name
@@ -67,7 +32,6 @@ public class User {
     public String getName() {
         return name;
     }
-
 
     /**
      * set {@link User}'s name
@@ -77,14 +41,12 @@ public class User {
         this.name = name;
     }
 
-
     /**
      * @return {@link User}'s password
      */
     public String getPassword() {
         return password;
     }
-
 
     /**
      * set {@link User}'s password
@@ -107,12 +69,5 @@ public class User {
      */
     public void setAge(int age) {
         this.age = age;
-    }
-
-    /**
-     * @return {@link User}'s date of creation
-     */
-    public Date getCreationDate() {
-        return creationDate;
     }
 }

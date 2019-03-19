@@ -26,8 +26,7 @@ public class UserService implements IUserService{
 
     @Override
     public List<User> findAll() {
-        List<User> users = (List<User>) userRepository.findAll();
-        return null;
+        return (List<User>) userRepository.findAll();
     }
 
     @Override
@@ -48,12 +47,36 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public boolean update(UserRequest request) {
-        return false;
+    public boolean update(UserRequest request, Long id) {
+
+        User newUser = new User();
+        newUser.setId(id);
+        newUser.setName(request.getName());
+        newUser.setPassword(request.getPassword());
+        newUser.setAge(request.getAge());
+
+        userRepository.save(newUser);
+
+        return true;
     }
 
     @Override
     public boolean delete(Long id) {
-        return false;
+        Optional<User> user = userRepository.findById(id);
+        if (!user.isPresent()) return false;
+
+        userRepository.deleteById(id);
+
+        return true;
+    }
+
+    @Override
+    public List<User> filterByAge(Integer min, Integer max) {
+        return userRepository.findByAgeBetween(min, max);
+    }
+
+    @Override
+    public User findByName(String name) {
+        return userRepository.findByName(name);
     }
 }

@@ -3,40 +3,107 @@ package hello.web;
 import hello.entity.User;
 import hello.service.IUserService;
 import hello.web.dto.IdDTO;
+import hello.web.request.UserFilterByAgeRequest;
+import hello.web.request.UserFindByNameRequest;
 import hello.web.request.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static hello.web.dto.DtoConverter.convertListUsersToDtos;
+import static hello.web.dto.DtoConverter.convertUserToDto;
+
+/**
+ *Controller for operating with entity {@link User}
+ */
 @RestController
 @RequestMapping("/user")
 public class UserController {
     private IUserService userService;
 
+    /**
+     * @param userService
+     */
     @Autowired
     public UserController(IUserService userService) {
         this.userService = userService;
     }
 
+    /**
+     * @param id for {@link User} in database
+     * @return {@link ResponseEntity} and {@link HttpStatus}
+     */
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         User user = userService.findOne(id);
-        if (user != null) return new ResponseEntity<>(user, HttpStatus.OK);
+        if (user != null) return new ResponseEntity<>(convertUserToDto(user), HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PutMapping
-    public ResponseEntity<?> create(@RequestBody @Valid UserRequest request){
+    /**
+     * @param request as {@link UserFindByNameRequest}
+     * @return {@link ResponseEntity} and {@link HttpStatus}
+     */
+    @GetMapping("/findByName")
+    public ResponseEntity<?> findByName(@RequestBody @Valid UserFindByNameRequest request) {
+        User user = userService.findByName(request.getName());
+        if (user != null) return new ResponseEntity<>(convertUserToDto(user), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * @param request as {@link UserRequest}
+     * @return {@link ResponseEntity} and {@link HttpStatus}
+     */
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody @Valid UserRequest request) {
         Long id = userService.create(request);
         if (id != -1L) return new ResponseEntity<>(new IdDTO(id), HttpStatus.CREATED);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * @param request as {@link UserRequest}
+     * @param id for {@link User} in database
+     * @return {@link ResponseEntity} and {@link HttpStatus}
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@RequestBody @Valid UserRequest request,
+                                    @PathVariable Long id) {
+        boolean isUpdated = userService.update(request, id);
+        if (isUpdated) return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+
+    /**
+     * @param id for {@link User} in database
+     * @return {@link ResponseEntity} and {@link HttpStatus}
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        boolean isDeleted = userService.delete(id);
+        if (isDeleted) return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * @return {@link ResponseEntity} and {@link HttpStatus}
+     */
+    @GetMapping("/getAll")
+    public ResponseEntity<?> findAll() {
+        return new ResponseEntity<>(convertListUsersToDtos(userService.findAll()), HttpStatus.OK);
+    }
+
+    /**
+     * @param req as {@link UserFilterByAgeRequest}
+     * @return {@link ResponseEntity} and {@link HttpStatus}
+     */
+    @GetMapping("/filterByAge")
+    public ResponseEntity<?> filterByAge(@Valid @RequestBody UserFilterByAgeRequest req) {
+        return new ResponseEntity<>(convertListUsersToDtos(userService.filterByAge(req.getMin(), req.getMax())), HttpStatus.OK);
     }
 }

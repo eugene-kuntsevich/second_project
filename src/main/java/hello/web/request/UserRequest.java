@@ -3,7 +3,6 @@ package hello.web.request;
 import hello.entity.User;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  *Entity for wiring with {@link User}

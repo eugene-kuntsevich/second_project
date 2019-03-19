@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService implements IUserService{
+public class UserService implements IUserService {
 
     private IUserRepository userRepository;
 
@@ -39,25 +39,23 @@ public class UserService implements IUserService{
         newUser.setAge(request.getAge());
         newUser.setPassword(request.getPassword());
 
-        User savedUser = userRepository.save(newUser);
-
-        if (savedUser != null) return savedUser.getId();
-
-        return -1L;
+        return userRepository.save(newUser).getId();
     }
 
     @Override
     public boolean update(UserRequest request, Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
 
-        User newUser = new User();
-        newUser.setId(id);
-        newUser.setName(request.getName());
-        newUser.setPassword(request.getPassword());
-        newUser.setAge(request.getAge());
+        if (userOptional.isPresent()) {
 
-        userRepository.save(newUser);
-
-        return true;
+            User updatedUser = userOptional.get();
+            updatedUser.setId(id);
+            updatedUser.setName(request.getName());
+            updatedUser.setPassword(request.getPassword());
+            updatedUser.setAge(request.getAge());
+            userRepository.save(updatedUser);
+            return true;
+        } else return false;
     }
 
     @Override

@@ -17,7 +17,7 @@ import static hello.web.dto.DtoConverter.convertListUsersToDtos;
 import static hello.web.dto.DtoConverter.convertUserToDto;
 
 /**
- *Controller for operating with entity {@link User}
+ * Controller for operating with entity {@link User}
  */
 @RestController
 @RequestMapping("/user")
@@ -39,7 +39,9 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         User user = userService.findOne(id);
-        if (user != null) return new ResponseEntity<>(convertUserToDto(user), HttpStatus.OK);
+        if (user != null) {
+            return new ResponseEntity<>(convertUserToDto(user), HttpStatus.OK);
+        }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -67,7 +69,7 @@ public class UserController {
 
     /**
      * @param request as {@link UserRequest}
-     * @param id for {@link User} in database
+     * @param id      for {@link User} in database
      * @return {@link ResponseEntity} and {@link HttpStatus}
      */
     @PutMapping("/{id}")

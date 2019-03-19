@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "061b2dd5-31cb-4375-b379-77811dfec616",
-		"name": "second_project",
+		"_postman_id": "bc3d2bcb-0c01-4a20-b419-8e66e9e5b47a",
+		"name": "second_project copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -15,7 +15,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8080/user/1",
+					"raw": "http://localhost:8080/user/101",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -23,7 +23,7 @@
 					"port": "8080",
 					"path": [
 						"user",
-						"1"
+						"101"
 					]
 				}
 			},
@@ -117,7 +117,7 @@
 		{
 			"name": "update user",
 			"request": {
-				"method": "POST",
+				"method": "PUT",
 				"header": [
 					{
 						"key": "Content-Type",
@@ -128,17 +128,18 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"Grisha\",\n\t\"password\": \"qwerty\",\n\t\"age\": 44\n}"
+					"raw": "{\n\t\"name\": \"Grisha2\",\n\t\"password\": \"qwerty\",\n\t\"age\": 45\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8080/user",
+					"raw": "http://localhost:8080/user/4",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"user"
+						"user",
+						"4"
 					]
 				}
 			},

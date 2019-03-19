@@ -49,7 +49,6 @@ public class UserService implements IUserService {
         if (userOptional.isPresent()) {
 
             User updatedUser = userOptional.get();
-            updatedUser.setId(id);
             updatedUser.setName(request.getName());
             updatedUser.setPassword(request.getPassword());
             updatedUser.setAge(request.getAge());

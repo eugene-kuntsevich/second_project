@@ -54,6 +54,10 @@ public class UserControllerTest {
         RestAssured.port = port;
     }
 
+
+    /**
+     * methods for executing any operations before started everyone test
+     */
     @Before
     public void init() {
 

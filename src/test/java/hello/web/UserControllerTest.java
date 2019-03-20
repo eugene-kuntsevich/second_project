@@ -1,128 +1,204 @@
 package hello.web;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import hello.entity.User;
-import hello.repo.IUserRepository;
-import io.restassured.RestAssured;
+import hello.web.dto.IdDTO;
+import hello.web.dto.UserDto;
+import hello.web.request.UserFilterByAgeRequest;
+import hello.web.request.UserFindByNameRequest;
+import hello.web.request.UserRequest;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.annotation.PostConstruct;
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
-public class UserControllerTest {
+public class UserControllerTest extends ParentTestClass{
 
-    @LocalServerPort
-    private int port;
+    @Test
+    public void findById_FoundUser_Test() {
+                Response response = given()
+                .contentType(ContentType.JSON)
+                .get(urlPrefix + "/{id}", USER1.getId());
 
-    @Autowired
-    private IUserRepository userRepository;
+        assertEquals(HttpStatus.OK.value(), response.getStatusCode());
 
-    private static final Gson gson = new GsonBuilder().setDateFormat("dd.MM.yyyy").create();
-    private static final String urlPrefix = "/user";
-    private static final User USER = new User();
-    private static final String USER_NAME = "name6";
-    private static final Integer USER_AGE = 99;
-    private static final String USER_PASSWORD = "12345";
+        String responseStr = response.asString();
 
-    @PostConstruct
-    public void setup() {
-        RestAssured.baseURI = "http://localhost";
-        RestAssured.port = port;
-    }
+        UserDto userDto = getResponseDataAsObject(UserDto.class, responseStr);
 
+        assertEquals(USER1.getId(), userDto.getId());
+        assertEquals(USER_NAME_1, userDto.getName());
+        assertEquals((int) USER_AGE_1, userDto.getAge());
 
-    /**
-     * methods for executing any operations before started everyone test
-     */
-    @Before
-    public void init() {
-
-        USER.setName(USER_NAME);
-        USER.setPassword(USER_PASSWORD);
-        USER.setAge(USER_AGE);
-
-        User userFromDb = userRepository.save(USER);
-
-        USER.setId(userFromDb.getId());
     }
 
     @Test
-    public void findById() {
+    public void findById_NotFoundUser_Test() {
+                Response response = given()
+                .contentType(ContentType.JSON)
+                .get(urlPrefix + "/{id}", -1L);
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
+    }
+
+    @Test
+    public void findByName_FoundUser_Test() {
+        UserFindByNameRequest req = new UserFindByNameRequest();
+        req.setName(USER_NAME_1);
 
         Response response = given()
                 .contentType(ContentType.JSON)
-                .body(gson.toJson(USER))
-                .get(urlPrefix + "/{id}", USER.getId());
+                .body(gson.toJson(req))
+                .get(urlPrefix + "/findByName");
+
+        assertEquals(HttpStatus.OK.value(), response.getStatusCode());
+
+        String responseStr = response.asString();
+
+        UserDto userDto = getResponseDataAsObject(UserDto.class, responseStr);
+
+        assertEquals(USER1.getId(), userDto.getId());
+        assertEquals(USER_NAME_1, userDto.getName());
+        assertEquals((int) USER_AGE_1, userDto.getAge());
+    }
+
+    @Test
+    public void findByName_NotFoundUser_Test() {
+        UserFindByNameRequest req = new UserFindByNameRequest();
+        req.setName("Fake_name");
+
+        Response response = given()
+                .contentType(ContentType.JSON)
+                .body(gson.toJson(req))
+                .get(urlPrefix + "/findByName");
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
+    }
+
+    @Test
+    public void create_UserWasCreated_Test() {
+        UserRequest req = new UserRequest();
+        req.setName(USER_NAME_CREATE_AND_UPDATE_METHOD_TEST);
+        req.setPassword(USER_PASSWORD);
+        req.setAge(USER_AGE_1);
+
+        Response response = given()
+                .contentType(ContentType.JSON)
+                .body(gson.toJson(req))
+                .post(urlPrefix);
+
+        assertEquals(HttpStatus.CREATED.value(), response.getStatusCode());
+
+        String responseStr = response.asString();
+
+        IdDTO idDTO = getResponseDataAsObject(IdDTO.class, responseStr);
+
+        assertNotNull(idDTO.getId());
+    }
+
+    @Test
+    public void create_UserWasNotCreated_Test() {
+        UserRequest req = new UserRequest();
+        req.setName(USER_NAME_1);
+        req.setPassword(USER_PASSWORD);
+        req.setAge(USER_AGE_1);
+
+        Response response = given()
+                .contentType(ContentType.JSON)
+                .body(gson.toJson(req))
+                .post(urlPrefix);
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode());
+    }
+
+    @Test
+    public void update_UserWasUpdated_Test() {
+        UserRequest req = new UserRequest();
+        req.setName(USER_NAME_CREATE_AND_UPDATE_METHOD_TEST);
+        req.setPassword(USER_PASSWORD + "1");
+        req.setAge(USER_AGE_1 + 1);
+
+        Response response = given()
+                .contentType(ContentType.JSON)
+                .body(gson.toJson(req))
+                .put(urlPrefix+ "/{id}", USER1.getId());
 
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
     }
 
     @Test
-    public void findByName() {
+    public void update_UserWasNotFound_Test() {
+        UserRequest req = new UserRequest();
+        req.setName(USER_NAME_CREATE_AND_UPDATE_METHOD_TEST);
+        req.setPassword(USER_PASSWORD + "1");
+        req.setAge(USER_AGE_1 + 1);
+
+        Response response = given()
+                .contentType(ContentType.JSON)
+                .body(gson.toJson(req))
+                .put(urlPrefix+ "/{id}", -1L);
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
     }
 
     @Test
-    public void create() {
+    public void delete_UserWasDeleted_Test() {
+        Response response = given()
+                .contentType(ContentType.JSON)
+                .delete(urlPrefix+ "/{id}", USER1.getId());
+
+        assertEquals(HttpStatus.OK.value(), response.getStatusCode());
     }
 
     @Test
-    public void update() {
+    public void delete_UserNotFound_Test() {
+        Response response = given()
+                .contentType(ContentType.JSON)
+                .delete(urlPrefix+ "/{id}", -1L);
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
     }
 
     @Test
-    public void delete() {
+    public void findAll_Test() {
+        Response response = given()
+                .contentType(ContentType.JSON)
+                .get(urlPrefix+ "/getAll");
+
+        assertEquals(HttpStatus.OK.value(), response.getStatusCode());
+
+        String responseStr = response.asString();
+
+        List<UserDto> userDtos = getResponseDataAsObject(ArrayList.class, responseStr);
+
+        assertEquals(2, userDtos.size());
     }
 
     @Test
-    public void findAll() {
-    }
+    public void filterByAge_Test() {
+        UserFilterByAgeRequest req = new UserFilterByAgeRequest();
+        req.setMin(5);
+        req.setMax(15);
 
-    @Test
-    public void filterByAge() {
-    }
+        Response response = given()
+                .contentType(ContentType.JSON)
+                .body(gson.toJson(req))
+                .get(urlPrefix+ "/filterByAge");
 
-    public void cleanDB() throws SQLException {
-        SessionFactory factory = new Configuration().buildSessionFactory();
-        Session session = factory.openSession();
-        Transaction tx = null;
+        assertEquals(HttpStatus.OK.value(), response.getStatusCode());
 
-        try {
-            tx = session.beginTransaction();
+        String responseStr = response.asString();
 
-            session.createQuery("delete from Users");
+        List<UserDto> userDtos = getResponseDataAsObject(ArrayList.class, responseStr);
 
-            tx.commit();
-        }
-
-        catch (Exception e) {
-            if (tx!=null) tx.rollback();
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
+        assertEquals(1, userDtos.size());
     }
 }

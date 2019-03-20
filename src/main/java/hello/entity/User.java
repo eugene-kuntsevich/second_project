@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
+import java.util.Objects;
 
 
 /**
@@ -114,5 +115,20 @@ public class User {
      */
     public Date getCreationDate() {
         return creationDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return age == user.age &&
+                Objects.equals(name, user.name) &&
+                Objects.equals(password, user.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, password, age);
     }
 }

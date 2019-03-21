@@ -25,7 +25,7 @@ public class UserController {
     private IUserService userService;
 
     /**
-     * @param userService
+     * @param userService entity for operating with {@link User}
      */
     @Autowired
     public UserController(IUserService userService) {
@@ -56,7 +56,9 @@ public class UserController {
     @GetMapping("/findByName")
     public ResponseEntity<?> findByName(@RequestBody @Valid UserFindByNameRequest request) {
         User user = userService.findByName(request.getName());
-        if (user != null) return new ResponseEntity<>(convertUserToDto(user), HttpStatus.OK);
+        if (user != null) {
+            return new ResponseEntity<>(convertUserToDto(user), HttpStatus.OK);
+        }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -69,7 +71,9 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid UserRequest request) {
         Long id = userService.create(request);
-        if (id != -1L) return new ResponseEntity<>(new IdDTO(id), HttpStatus.CREATED);
+        if (id != -1L) {
+            return new ResponseEntity<>(new IdDTO(id), HttpStatus.CREATED);
+        }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
@@ -84,7 +88,9 @@ public class UserController {
     public ResponseEntity<?> update(@RequestBody @Valid UserRequest request,
                                     @PathVariable Long id) {
         boolean isUpdated = userService.update(request, id);
-        if (isUpdated) return new ResponseEntity<>(HttpStatus.OK);
+        if (isUpdated) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -98,7 +104,9 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         boolean isDeleted = userService.delete(id);
-        if (isDeleted) return new ResponseEntity<>(HttpStatus.OK);
+        if (isDeleted) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 

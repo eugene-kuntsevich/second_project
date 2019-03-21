@@ -20,7 +20,7 @@ public class UserService implements IUserService {
     /**
      * Constructor for {@link IUserRepository}
      *
-     * @param userRepository
+     * @param userRepository entity for operating in database
      */
     @Autowired
     public UserService(IUserRepository userRepository) {
@@ -102,7 +102,9 @@ public class UserService implements IUserService {
     @Override
     public boolean delete(Long id) {
         Optional<User> user = userRepository.findById(id);
-        if (!user.isPresent()) return false;
+        if (!user.isPresent()) {
+            return false;
+        }
 
         userRepository.deleteById(id);
 

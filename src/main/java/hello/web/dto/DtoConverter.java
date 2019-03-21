@@ -5,12 +5,10 @@ import hello.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Class with converters from {@link User} to {@link UserDto}
  */
 public class DtoConverter {
-
 
     /**
      * Method for converting {@link User} to {@link UserDto}

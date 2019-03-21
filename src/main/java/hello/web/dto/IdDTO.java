@@ -1,13 +1,11 @@
 package hello.web.dto;
 
-
 /**
  * Class for transferring {@link hello.entity.User}'s id
  */
 public class IdDTO {
 
     private Long id;
-
 
     /**
      * Constructor for {@link IdDTO}

@@ -1,5 +1,6 @@
 package hello.web;
 
+import hello.entity.User;
 import hello.web.dto.IdDTO;
 import hello.web.dto.UserDto;
 import hello.web.request.UserFilterByAgeRequest;
@@ -18,10 +19,15 @@ import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-
+/**
+ * Class for testing methods from {@link UserController}
+ */
 @EnableAutoConfiguration
 public class UserControllerTest extends ParentTestClass{
 
+    /**
+     * Method for test finding one {@link User} by id when {@link User} exist
+     */
     @Test
     public void findById_FoundUser_Test() {
                 Response response = given()
@@ -40,6 +46,9 @@ public class UserControllerTest extends ParentTestClass{
 
     }
 
+    /**
+     * Method for test finding one {@link User} by id when {@link User} not exist
+     */
     @Test
     public void findById_NotFoundUser_Test() {
                 Response response = given()
@@ -49,6 +58,9 @@ public class UserControllerTest extends ParentTestClass{
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
     }
 
+    /**
+     * Method for test finding one {@link User} by name when {@link User} exist
+     */
     @Test
     public void findByName_FoundUser_Test() {
         UserFindByNameRequest req = new UserFindByNameRequest();
@@ -70,6 +82,9 @@ public class UserControllerTest extends ParentTestClass{
         assertEquals((int) USER_AGE_1, userDto.getAge());
     }
 
+    /**
+     * Method for test finding one {@link User} by name when {@link User} not exist
+     */
     @Test
     public void findByName_NotFoundUser_Test() {
         UserFindByNameRequest req = new UserFindByNameRequest();
@@ -83,6 +98,9 @@ public class UserControllerTest extends ParentTestClass{
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
     }
 
+    /**
+     * Method for test successful creating one {@link User}
+     */
     @Test
     public void create_UserWasCreated_Test() {
         UserRequest req = new UserRequest();
@@ -104,6 +122,9 @@ public class UserControllerTest extends ParentTestClass{
         assertNotNull(idDTO.getId());
     }
 
+    /**
+     * Method for test unsuccessful creating one {@link User}
+     */
     @Test
     public void create_UserWasNotCreated_Test() {
         UserRequest req = new UserRequest();
@@ -119,8 +140,11 @@ public class UserControllerTest extends ParentTestClass{
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode());
     }
 
+    /**
+     * Method for test successful updating one {@link User}
+     */
     @Test
-    public void update_UserWasUpdated_Test() {
+    public void update_UserExist_Test() {
         UserRequest req = new UserRequest();
         req.setName(USER_NAME_CREATE_AND_UPDATE_METHOD_TEST);
         req.setPassword(USER_PASSWORD + "1");
@@ -134,6 +158,9 @@ public class UserControllerTest extends ParentTestClass{
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
     }
 
+    /**
+     * Method for test unsuccessful updating one {@link User}
+     */
     @Test
     public void update_UserWasNotFound_Test() {
         UserRequest req = new UserRequest();
@@ -149,8 +176,11 @@ public class UserControllerTest extends ParentTestClass{
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
     }
 
+    /**
+     * Method for test successful deleting one {@link User}
+     */
     @Test
-    public void delete_UserWasDeleted_Test() {
+    public void delete_UserExist_Test() {
         Response response = given()
                 .contentType(ContentType.JSON)
                 .delete(urlPrefix+ "/{id}", USER1.getId());
@@ -158,6 +188,9 @@ public class UserControllerTest extends ParentTestClass{
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
     }
 
+    /**
+     * Method for test unsuccessful deleting one {@link User}
+     */
     @Test
     public void delete_UserNotFound_Test() {
         Response response = given()
@@ -167,6 +200,9 @@ public class UserControllerTest extends ParentTestClass{
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
     }
 
+    /**
+     * Method for test finding all {@link User}s
+     */
     @Test
     public void findAll_Test() {
         Response response = given()
@@ -182,6 +218,9 @@ public class UserControllerTest extends ParentTestClass{
         assertEquals(2, userDtos.size());
     }
 
+    /**
+     * Method for test filtering {@link User}s by age
+     */
     @Test
     public void filterByAge_Test() {
         UserFilterByAgeRequest req = new UserFilterByAgeRequest();

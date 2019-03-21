@@ -4,6 +4,9 @@ import hello.entity.User;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * Class for creating request for filtering {@link User} by age
+ */
 public class UserFilterByAgeRequest {
 
     @NotNull
@@ -26,6 +29,8 @@ public class UserFilterByAgeRequest {
     }
 
     /**
+     * Setting minimal age to {@link UserFilterByAgeRequest}
+     *
      * @param min
      */
     public void setMin(Integer min) {
@@ -40,6 +45,8 @@ public class UserFilterByAgeRequest {
     }
 
     /**
+     * Setting maximal age to {@link UserFilterByAgeRequest}
+     *
      * @param max
      */
     public void setMax(Integer max) {

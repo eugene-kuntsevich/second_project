@@ -15,6 +15,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.PostConstruct;
 
+/**
+ * Class for test's configuration
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class ParentTestClass {
@@ -72,6 +75,9 @@ public abstract class ParentTestClass {
         USER2.setId(userFromDb2.getId());
     }
 
+    /**
+     * methods for executing any operations after stopped everyone test
+     */
     @After
     public void destroy() {
         userRepository.deleteAll();

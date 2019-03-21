@@ -33,6 +33,8 @@ public class UserController {
     }
 
     /**
+     * Methods finding {@link User} by id
+     *
      * @param id for {@link User} in database
      * @return {@link ResponseEntity} and {@link HttpStatus}
      */
@@ -46,6 +48,8 @@ public class UserController {
     }
 
     /**
+     * Method for finding one {@link User} by name
+     *
      * @param request as {@link UserFindByNameRequest}
      * @return {@link ResponseEntity} and {@link HttpStatus}
      */
@@ -57,6 +61,8 @@ public class UserController {
     }
 
     /**
+     * Method for creation one {@link User}
+     *
      * @param request as {@link UserRequest}
      * @return {@link ResponseEntity} and {@link HttpStatus}
      */
@@ -68,6 +74,8 @@ public class UserController {
     }
 
     /**
+     * Method for updating one {@link User}
+     *
      * @param request as {@link UserRequest}
      * @param id      for {@link User} in database
      * @return {@link ResponseEntity} and {@link HttpStatus}
@@ -82,6 +90,8 @@ public class UserController {
 
 
     /**
+     * Method or deleting one {@link User}
+     *
      * @param id for {@link User} in database
      * @return {@link ResponseEntity} and {@link HttpStatus}
      */
@@ -93,6 +103,8 @@ public class UserController {
     }
 
     /**
+     * Method for finding all {@link User}'s
+     *
      * @return {@link ResponseEntity} and {@link HttpStatus}
      */
     @GetMapping("/getAll")
@@ -101,6 +113,8 @@ public class UserController {
     }
 
     /**
+     * Method for filtering {@link User}s by minimal and maximal boundary of age
+     *
      * @param req as {@link UserFilterByAgeRequest}
      * @return {@link ResponseEntity} and {@link HttpStatus}
      */

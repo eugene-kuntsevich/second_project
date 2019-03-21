@@ -5,24 +5,16 @@ import hello.entity.User;
 import javax.validation.constraints.NotBlank;
 
 /**
- *Entity for wiring with {@link User}
+ *Class for creating request for creation {@link User}
  */
 public class UserRequest {
-    /**
-     * name for {@link User}
-     */
+
     @NotBlank
     private String name;
 
-    /**
-     * password for {@link User}
-     */
     @NotBlank
     private String password;
 
-    /**
-     * age for {@link User}
-     */
     private Integer age;
 
     /**
@@ -33,7 +25,7 @@ public class UserRequest {
     }
 
     /**
-     * set {@link User}'s name
+     * setting {@link User}'s name
      * @param name name for {@link User}
      */
     public void setName(String name) {
@@ -48,7 +40,7 @@ public class UserRequest {
     }
 
     /**
-     * set {@link User}'s password
+     * setting {@link User}'s password
      * @param password password for {@link User}
      */
     public void setPassword(String password) {
@@ -63,7 +55,7 @@ public class UserRequest {
     }
 
     /**
-     * set {@link User}'s age
+     * setting {@link User}'s age
      * @param age age for {@link User}
      */
     public void setAge(int age) {

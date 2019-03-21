@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * interface for magic methods Spring JPA
+ * interface for 'magic' methods Spring JPA
  */
 public interface IUserRepository extends CrudRepository<User, Long> {
 

@@ -5,12 +5,10 @@ import hello.entity.User;
 import javax.validation.constraints.NotBlank;
 
 /**
- *Entity for wiring with {@link User}
+ *Class for creating request for finding {@link User} by name
  */
 public class UserFindByNameRequest {
-    /**
-     * name for {@link User}
-     */
+
     @NotBlank
     private String name;
 
@@ -22,7 +20,7 @@ public class UserFindByNameRequest {
     }
 
     /**
-     * set {@link User}'s name
+     * setting {@link User}'s name
      * @param name name for {@link User}
      */
     public void setName(String name) {

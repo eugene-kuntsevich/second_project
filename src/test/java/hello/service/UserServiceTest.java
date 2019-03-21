@@ -17,6 +17,9 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
+/**
+ * Class for testing methods from {@link UserService}
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
 
@@ -37,6 +40,9 @@ public class UserServiceTest {
     private static final String USER_PASSWORD = "12345";
 
 
+    /**
+     * Method for doing any operation before everyone test is started
+     */
     @Before
     public void init() {
         USER1.setId(USER_ID_1);
@@ -50,6 +56,9 @@ public class UserServiceTest {
         USER2.setAge(USER_AGE_2);
     }
 
+    /**
+     * Method for test finding one {@link User} in database
+     */
     @Test
     public void findOneTest() {
         when(userRepository.findById(USER_ID_1)).thenReturn(java.util.Optional.of(USER1));
@@ -59,6 +68,9 @@ public class UserServiceTest {
         assertEquals(USER1, userFromDB);
     }
 
+    /**
+     * Method for test finding all {@link User}s in database
+     */
     @Test
     public void findAllTest() {
         when(userRepository.findAll()).thenReturn(Arrays.asList(USER1, USER2));
@@ -68,6 +80,9 @@ public class UserServiceTest {
         assertThat(usersFromDB, containsInAnyOrder(USER1, USER2));
     }
 
+    /**
+     * Method for test creation one {@link User} in database when {@link User}'s name not exist in database
+     */
     @Test
     public void create_userNameNotExist_Test() {
         when(userRepository.findByName(USER_NAME_1)).thenReturn(null);
@@ -83,6 +98,9 @@ public class UserServiceTest {
         assertEquals(USER_ID_1, id);
     }
 
+    /**
+     * Method for test creation one {@link User} in database when {@link User}'s name exist in database
+     */
     @Test
     public void create_userNameExist_Test() {
         when(userRepository.findByName(USER_NAME_1)).thenReturn(USER1);
@@ -97,6 +115,9 @@ public class UserServiceTest {
         assertEquals(-1L, (long) id);
     }
 
+    /**
+     * Method for test updating one {@link User} in database when {@link User} exist in database
+     */
     @Test
     public void update_userExist_Test() {
         when(userRepository.findById(USER_ID_1)).thenReturn(java.util.Optional.of(USER1));
@@ -111,6 +132,9 @@ public class UserServiceTest {
         assertTrue(isUpdated);
     }
 
+    /**
+     * Method for test updating one {@link User} in database when {@link User} not exist in database
+     */
     @Test
     public void update_userNotFound_Test() {
         when(userRepository.findById(USER_ID_1)).thenReturn(java.util.Optional.empty());
@@ -125,6 +149,9 @@ public class UserServiceTest {
         assertFalse(isUpdated);
     }
 
+    /**
+     * Method for test deleting one {@link User} in database when {@link User} exist in database
+     */
     @Test
     public void delete_userExist_Test() {
         when(userRepository.findById(USER_ID_1)).thenReturn(java.util.Optional.of(USER1));
@@ -134,6 +161,9 @@ public class UserServiceTest {
         assertTrue(isDeleted);
     }
 
+    /**
+     * Method for test deleting one {@link User} in database when {@link User} not exist in database
+     */
     @Test
     public void delete_userNotExist_Test() {
         when(userRepository.findById(USER_ID_1)).thenReturn(java.util.Optional.empty());
@@ -143,6 +173,9 @@ public class UserServiceTest {
         assertFalse(isDeleted);
     }
 
+    /**
+     * Method for test filtering{@link User}s in database from minimal to maximal age
+     */
     @Test
     public void filterByAgeTest() {
         when(userRepository.findByAgeBetween(5, 15)).thenReturn(Arrays.asList(USER2));
@@ -152,6 +185,9 @@ public class UserServiceTest {
         assertEquals(users.get(0), USER2);
     }
 
+    /**
+     * Method for test finding one {@link User} in database by name
+     */
     @Test
     public void findByNameTest() {
         when(userRepository.findByName(USER_NAME_1)).thenReturn(USER1);

@@ -2,6 +2,9 @@ package hello.web.dto;
 
 import java.util.Date;
 
+/**
+ * Class for transferring {@link hello.entity.User} as DTO-object
+ */
 public class UserDto {
 
     private Long id;
@@ -26,7 +29,7 @@ public class UserDto {
     }
 
     /**
-     * set {@link UserDto}'s id
+     * setting {@link UserDto}'s id
      *
      * @param id id for {@link UserDto}
      */
@@ -42,7 +45,7 @@ public class UserDto {
     }
 
     /**
-     * set {@link UserDto}'s name
+     * setting {@link UserDto}'s name
      *
      * @param name name for {@link UserDto}
      */
@@ -58,7 +61,7 @@ public class UserDto {
     }
 
     /**
-     * set {@link UserDto}'s age
+     * setting {@link UserDto}'s age
      *
      * @param age age for {@link UserDto}
      */
@@ -67,7 +70,7 @@ public class UserDto {
     }
 
     /**
-     * set {@link UserDto}'s creationDate
+     * setting {@link UserDto}'s creationDate
      *
      * @param creationDate creationDate for {@link UserDto}
      */

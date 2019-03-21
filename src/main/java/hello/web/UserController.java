@@ -35,6 +35,7 @@ public class UserController {
     /**
      * Methods finding {@link User} by id
      *
+     *
      * @param id for {@link User} in database
      * @return {@link ResponseEntity} and {@link HttpStatus}
      */

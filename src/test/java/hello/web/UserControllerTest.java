@@ -1,6 +1,9 @@
 package hello.web;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import hello.entity.User;
+import hello.repo.IUserRepository;
 import hello.web.dto.IdDTO;
 import hello.web.dto.UserDto;
 import hello.web.request.UserFilterByAgeRequest;
@@ -8,7 +11,10 @@ import hello.web.request.UserFindByNameRequest;
 import hello.web.request.UserRequest;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 
@@ -23,16 +29,30 @@ import static org.junit.Assert.assertNotNull;
  * Class for testing methods from {@link UserController}
  */
 @EnableAutoConfiguration
-public class UserControllerTest extends ParentTestClass{
+public class UserControllerTest extends ParentTestClass {
+
+    @Autowired
+    private IUserRepository userRepository;
+
+    private static final Gson GSON = new GsonBuilder().setDateFormat("dd.MM.yyyy").create();
+    private static final String URL_PREFIX = "/user";
+    private static final User USER_1 = new User();
+    private static final User USER_2 = new User();
+    private static final String USER_NAME_1 = "name";
+    private static final String USER_NAME_2 = "name2";
+    private static final String USER_NAME_CREATE_AND_UPDATE_METHOD_TEST = "new_name";
+    private static final Integer USER_AGE_1 = 99;
+    private static final Integer USER_AGE_2 = 10;
+    private static final String USER_PASSWORD = "12345";
 
     /**
      * Method for test finding one {@link User} by id when {@link User} exist
      */
     @Test
     public void findById_FoundUser_Test() {
-                Response response = given()
+        Response response = given()
                 .contentType(ContentType.JSON)
-                .get(urlPrefix + "/{id}", USER1.getId());
+                .get(URL_PREFIX + "/{id}", USER_1.getId());
 
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
 
@@ -40,7 +60,7 @@ public class UserControllerTest extends ParentTestClass{
 
         UserDto userDto = getResponseDataAsObject(UserDto.class, responseStr);
 
-        assertEquals(USER1.getId(), userDto.getId());
+        assertEquals(USER_1.getId(), userDto.getId());
         assertEquals(USER_NAME_1, userDto.getName());
         assertEquals((int) USER_AGE_1, userDto.getAge());
 
@@ -51,9 +71,9 @@ public class UserControllerTest extends ParentTestClass{
      */
     @Test
     public void findById_NotFoundUser_Test() {
-                Response response = given()
+        Response response = given()
                 .contentType(ContentType.JSON)
-                .get(urlPrefix + "/{id}", -1L);
+                .get(URL_PREFIX + "/{id}", -1L);
 
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
     }
@@ -68,8 +88,8 @@ public class UserControllerTest extends ParentTestClass{
 
         Response response = given()
                 .contentType(ContentType.JSON)
-                .body(gson.toJson(req))
-                .get(urlPrefix + "/findByName");
+                .body(GSON.toJson(req))
+                .get(URL_PREFIX + "/findByName");
 
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
 
@@ -77,7 +97,7 @@ public class UserControllerTest extends ParentTestClass{
 
         UserDto userDto = getResponseDataAsObject(UserDto.class, responseStr);
 
-        assertEquals(USER1.getId(), userDto.getId());
+        assertEquals(USER_1.getId(), userDto.getId());
         assertEquals(USER_NAME_1, userDto.getName());
         assertEquals((int) USER_AGE_1, userDto.getAge());
     }
@@ -92,8 +112,8 @@ public class UserControllerTest extends ParentTestClass{
 
         Response response = given()
                 .contentType(ContentType.JSON)
-                .body(gson.toJson(req))
-                .get(urlPrefix + "/findByName");
+                .body(GSON.toJson(req))
+                .get(URL_PREFIX + "/findByName");
 
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
     }
@@ -110,8 +130,8 @@ public class UserControllerTest extends ParentTestClass{
 
         Response response = given()
                 .contentType(ContentType.JSON)
-                .body(gson.toJson(req))
-                .post(urlPrefix);
+                .body(GSON.toJson(req))
+                .post(URL_PREFIX);
 
         assertEquals(HttpStatus.CREATED.value(), response.getStatusCode());
 
@@ -134,8 +154,8 @@ public class UserControllerTest extends ParentTestClass{
 
         Response response = given()
                 .contentType(ContentType.JSON)
-                .body(gson.toJson(req))
-                .post(urlPrefix);
+                .body(GSON.toJson(req))
+                .post(URL_PREFIX);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode());
     }
@@ -152,8 +172,8 @@ public class UserControllerTest extends ParentTestClass{
 
         Response response = given()
                 .contentType(ContentType.JSON)
-                .body(gson.toJson(req))
-                .put(urlPrefix+ "/{id}", USER1.getId());
+                .body(GSON.toJson(req))
+                .put(URL_PREFIX + "/{id}", USER_1.getId());
 
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
     }
@@ -170,8 +190,8 @@ public class UserControllerTest extends ParentTestClass{
 
         Response response = given()
                 .contentType(ContentType.JSON)
-                .body(gson.toJson(req))
-                .put(urlPrefix+ "/{id}", -1L);
+                .body(GSON.toJson(req))
+                .put(URL_PREFIX + "/{id}", -1L);
 
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
     }
@@ -183,7 +203,7 @@ public class UserControllerTest extends ParentTestClass{
     public void delete_UserExist_Test() {
         Response response = given()
                 .contentType(ContentType.JSON)
-                .delete(urlPrefix+ "/{id}", USER1.getId());
+                .delete(URL_PREFIX + "/{id}", USER_1.getId());
 
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
     }
@@ -195,7 +215,7 @@ public class UserControllerTest extends ParentTestClass{
     public void delete_UserNotFound_Test() {
         Response response = given()
                 .contentType(ContentType.JSON)
-                .delete(urlPrefix+ "/{id}", -1L);
+                .delete(URL_PREFIX + "/{id}", -1L);
 
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
     }
@@ -207,7 +227,7 @@ public class UserControllerTest extends ParentTestClass{
     public void findAll_Test() {
         Response response = given()
                 .contentType(ContentType.JSON)
-                .get(urlPrefix+ "/getAll");
+                .get(URL_PREFIX + "/getAll");
 
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
 
@@ -229,8 +249,8 @@ public class UserControllerTest extends ParentTestClass{
 
         Response response = given()
                 .contentType(ContentType.JSON)
-                .body(gson.toJson(req))
-                .get(urlPrefix+ "/filterByAge");
+                .body(GSON.toJson(req))
+                .get(URL_PREFIX + "/filterByAge");
 
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
 
@@ -239,5 +259,36 @@ public class UserControllerTest extends ParentTestClass{
         List<UserDto> userDtos = getResponseDataAsObject(ArrayList.class, responseStr);
 
         assertEquals(1, userDtos.size());
+    }
+
+    /**
+     * methods for executing any operations before started everyone test
+     */
+    @Before
+    public void init() {
+
+        USER_1.setName(USER_NAME_1);
+        USER_1.setPassword(USER_PASSWORD);
+        USER_1.setAge(USER_AGE_1);
+
+        User userFromDb1 = userRepository.save(USER_1);
+
+        USER_1.setId(userFromDb1.getId());
+
+        USER_2.setName(USER_NAME_2);
+        USER_2.setPassword(USER_PASSWORD);
+        USER_2.setAge(USER_AGE_2);
+
+        User userFromDb2 = userRepository.save(USER_2);
+
+        USER_2.setId(userFromDb2.getId());
+    }
+
+    /**
+     * methods for executing any operations after stopped everyone test
+     */
+    @After
+    public void destroy() {
+        userRepository.deleteAll();
     }
 }
